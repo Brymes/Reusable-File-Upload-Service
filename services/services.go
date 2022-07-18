@@ -59,7 +59,7 @@ func (s ServicePayload) DeleteUpload() {
 
 type Service interface {
 	Upload(s ServicePayload, logger *log.Logger) (url, publicID string)
-	SignUpload(s ServicePayload,, notificationURL string, logger *log.Logger) string
+	SignUpload(s ServicePayload, notificationURL string, logger *log.Logger) string
 }
 
 var AllServices = map[string]Service{
