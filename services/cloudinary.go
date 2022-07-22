@@ -16,7 +16,8 @@ type Cloudinary struct{}
 func (c Cloudinary) Upload(s ServicePayload, logger *log.Logger) (url, publicID string) {
 	ctx := context.Background()
 
-	resp, err := config.CloudinaryInstance.Upload.Upload(ctx, s.Filepath, uploader.UploadParams{Tags: s.Tags})
+	// Use CallBack or notification_url param to perform async uploads
+	resp, err := config.CloudinaryInstance.Client.Upload.Upload(ctx, s.Filepath, uploader.UploadParams{Tags: s.Tags})
 	utils.LogErr(err, logger)
 
 	url, publicID = resp.SecureURL, resp.PublicID
