@@ -1,4 +1,9 @@
-DockerFile
-Aws S3
 Unit tests
 Authentication Workflow
+Empty upload folder after upload complete
+Consider using goroutines to perform uploads in background
+Error Management with Sentry or similar/ Distributing logs
+Eager Transformations for Cloudinary
+
+NOTE:
+Tags always get parsed as strings
