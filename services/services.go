@@ -7,10 +7,11 @@ import (
 )
 
 type ServicePayload struct {
-	Filepath string   `json:"-"`
-	UploadID string   `json:"upload_id"`
-	Service  string   `json:"service"`
-	Tags     []string `json:"tags"`
+	Filepath string                 `json:"-"`
+	UploadID string                 `json:"upload_id"`
+	Service  string                 `json:"service"`
+	Bucket   string                 `json:"bucket"`
+	Tags     map[string]interface{} `json:"tags"`
 }
 
 func (s ServicePayload) UploadFile(logger *log.Logger) (url, publicID string) {

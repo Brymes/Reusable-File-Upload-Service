@@ -3,6 +3,7 @@ package api
 import (
 	"Upload-Service/config"
 	"Upload-Service/services"
+	u "Upload-Service/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
@@ -26,7 +27,7 @@ func UploadFile(c *gin.Context) {
 		return
 	}
 
-	request.Filepath, request.Tags, request.Service = filename, c.PostFormArray("tags"), c.PostForm("service")
+	request.Filepath, request.Tags, request.Service = filename, u.ParseTagsFromFormData(c.PostFormArray("tags")), c.PostForm("service")
 
 	reqBuffer, reqLogger := config.InitRequestLogger(request.Service)
 
