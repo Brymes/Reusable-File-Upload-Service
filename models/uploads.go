@@ -11,9 +11,9 @@ import (
 type Upload struct {
 	ID primitive.ObjectID `bson:"_id,  omitempty" json:"-"`
 	// Implement
-	Identifier string   `bson:"postID" json:"postID" binding:"required"`
-	UploadURL  string   `bson:"upload_url" json:"upload_url"`
-	Tags       []string `bson:"tags" json:"tags"`
+	Identifier string                 `bson:"postID" json:"postID" binding:"required"`
+	UploadURL  string                 `bson:"upload_url" json:"upload_url"`
+	Tags       map[string]interface{} `bson:"tags" json:"tags"`
 }
 
 func (u Upload) SaveUpload(logger *log.Logger) {
