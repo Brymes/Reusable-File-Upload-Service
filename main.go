@@ -8,6 +8,7 @@ import (
 func init() {
 	config.InitDb()
 	config.InitCloudinary()
+	config.InitS3()
 }
 
 func main() {
