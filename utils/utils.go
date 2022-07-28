@@ -3,20 +3,14 @@ package utils
 import (
 	"crypto/rand"
 	"fmt"
-	"log"
-	"strings"
 )
 
-func LogErr(err error, logger *log.Logger) {
-	if err != nil {
-		logger.Panic(err)
-	}
-}
+type APIResponse map[string]interface{}
 
 func GenerateUniqueID(length int) (string, error) {
 	bytes := make([]byte, length)
 
-	chars := "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+	chars := "0123456789abcdefghijklmnopqrstuvwxyz"
 
 	if _, err := rand.Read(bytes); err != nil {
 		return "", err
@@ -29,18 +23,17 @@ func GenerateUniqueID(length int) (string, error) {
 	return string(bytes), nil
 }
 
-func ConvertTagsToString(tags map[string]interface{}) (tagString string) {
+func ConvertTagsToString(tags []string) (tagString string) {
 	// Tags Parsing for S3 Integration
-	for key, element := range tags {
-		tagString += fmt.Sprintf("%v=%v&", key, element)
+	for _, element := range tags {
+		tagString += fmt.Sprintf("%v=&", element)
 	}
 	return
 }
 
-func ParseTagsFromFormData(tagArray []string) (tagMap map[string]interface{}) {
-	for _, element := range tagArray {
-		chars := strings.Split(element, "=")
-		tagMap[chars[0]] = chars[1]
+func HandlePanic(response APIResponse) {
+	if err := recover(); err != nil {
+		response["status"] = false
+		response["message"] = err
 	}
-	return
 }

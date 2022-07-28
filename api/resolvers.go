@@ -3,13 +3,14 @@ package api
 import (
 	"Upload-Service/config"
 	"Upload-Service/services"
-	u "Upload-Service/utils"
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
 	"path/filepath"
 )
+
+//TODO Use middlewares to validate if service exists and is active or not
 
 func UploadFile(c *gin.Context) {
 	var request services.ServicePayload
@@ -27,18 +28,19 @@ func UploadFile(c *gin.Context) {
 		return
 	}
 
-	request.Filepath, request.Tags, request.Service = filename, u.ParseTagsFromFormData(c.PostFormArray("tags")), c.PostForm("service")
+	request.Filepath, request.Tags, request.Service = filename, c.PostFormArray("tags"), c.PostForm("service")
 
 	reqBuffer, reqLogger := config.InitRequestLogger(request.Service)
 
-	url, publicID := request.UploadFile(reqLogger)
+	response := request.UploadFile(reqLogger)
 
-	log.Println(reqBuffer)
-	c.IndentedJSON(http.StatusOK, gin.H{
-		"message":  "File Upload Successful",
-		"url":      url,
-		"publicID": publicID,
-	})
+	defer log.Println(reqBuffer)
+
+	if response["status"].(bool) != true {
+		c.IndentedJSON(http.StatusInternalServerError, response)
+	}
+
+	c.IndentedJSON(http.StatusOK, response)
 }
 
 func GetUploadURL(c *gin.Context) {
@@ -55,7 +57,7 @@ func GetUploadURL(c *gin.Context) {
 
 	response := request.CreateUploadURL(serverURL, reqLogger)
 
-	log.Println(reqBuffer)
+	defer log.Println(reqBuffer)
 
 	if response["status"].(bool) != true {
 		c.IndentedJSON(http.StatusBadRequest, response)
