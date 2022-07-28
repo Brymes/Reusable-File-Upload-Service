@@ -13,9 +13,9 @@ import (
 
 type S3 struct{}
 
-func (s3Payload S3) Upload(s ServicePayload, logger *log.Logger) (url, publicID, message string) {
+func (s3Payload S3) Upload(s ServicePayload, logger *log.Logger) (url, publicID string) {
 	if config.S3Instance.IsActive != true {
-		return "", "", "Service Not Activated, Kindly Set Auth Keys"
+		logger.Panic("Service Not Activated, Kindly Set Auth Keys")
 	}
 
 	file, err := os.Open(s.Filepath)
@@ -28,7 +28,7 @@ func (s3Payload S3) Upload(s ServicePayload, logger *log.Logger) (url, publicID,
 
 	publicID, _ = utils.GenerateUniqueID(13)
 	if publicID == "" {
-		return "", "", "Internal Server Error Contact Support"
+		logger.Panic("Internal Server Error Contact Support")
 	}
 
 	tags := utils.ConvertTagsToString(s.Tags)
@@ -45,20 +45,21 @@ func (s3Payload S3) Upload(s ServicePayload, logger *log.Logger) (url, publicID,
 	_, err = config.S3Instance.Client.PutObject(context.TODO(), input)
 
 	if err != nil {
-		return "", "", fmt.Sprintf("Internal Server Error: %v", err.Error())
+		logger.Panicf("Internal Server Error: %v", err.Error())
 	}
 	url = ConstructObjectURL(publicID)
 
 	return
 }
 
-func (s3Payload S3) SignUpload(s ServicePayload, notificationURL string, logger *log.Logger) (signedURL, error string) {
+func (s3Payload S3) SignUpload(s ServicePayload, notificationURL string, logger *log.Logger) string {
 	if config.S3Instance.IsActive != true {
-		return "", "Service Not Activated, Kindly Set Auth Keys"
+		logger.Panic("Service Not Activated, Kindly Set Auth Keys")
 	}
+
 	id, _ := utils.GenerateUniqueID(13)
 	if id == "" {
-		return "", "Internal Server Error Contact Support"
+		logger.Panic("Internal Server Error")
 	}
 
 	input := &s3.GetObjectInput{
@@ -70,10 +71,10 @@ func (s3Payload S3) SignUpload(s ServicePayload, notificationURL string, logger 
 	resp, err := api.PresignGetObject(context.TODO(), input)
 
 	if err != nil || resp.URL == "" {
-		return "", "Internal Server Error Contact Support"
+		logger.Panic("Internal Server Error whilst sig ning URK")
 	}
 
-	return resp.URL, "Signed URL generated successfully"
+	return resp.URL
 }
 
 func ConstructObjectURL(objectKey string) (url string) {

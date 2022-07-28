@@ -2,55 +2,60 @@ package services
 
 import (
 	"Upload-Service/models"
-	"github.com/gin-gonic/gin"
+	"Upload-Service/utils"
 	"log"
 )
 
 type ServicePayload struct {
-	Filepath string                 `json:"-"`
-	UploadID string                 `json:"upload_id"`
-	Service  string                 `json:"service"`
-	Bucket   string                 `json:"bucket"`
-	Tags     map[string]interface{} `json:"tags"`
+	Filepath string   `json:"-"`
+	UploadID string   `json:"upload_id"`
+	Service  string   `json:"service"`
+	Bucket   string   `json:"bucket"`
+	Tags     []string `json:"tags"`
 }
 
-func (s ServicePayload) UploadFile(logger *log.Logger) (url, publicID string) {
+func (s ServicePayload) UploadFile(logger *log.Logger) (response utils.APIResponse) {
+	defer utils.HandlePanic(response)
+
 	service := AllServices[s.Service]
 
-	url, publicID = service.Upload(s, logger)
+	if service == nil {
+		response["url"] = ""
+		response["publicID"] = ""
+		panic("Unknown Service Selected")
+	}
+
+	url, publicID := service.Upload(s, logger)
 
 	upload := models.Upload{
 		Identifier: publicID,
 		UploadURL:  url,
 		Tags:       s.Tags,
 	}
-
 	upload.SaveUpload(logger)
+
+	response["url"], response["publicID"] = url, publicID
+	response["status"], response["message"] = true, "File Upload Successful"
 
 	return
 
 }
 
-func (s ServicePayload) CreateUploadURL(serverURL string, logger *log.Logger) gin.H {
+func (s ServicePayload) CreateUploadURL(serverURL string, logger *log.Logger) (response utils.APIResponse) {
+	defer utils.HandlePanic(response)
+
 	service := AllServices[s.Service]
 
 	serverURL = serverURL + "/" + s.Service
 
 	if service == nil {
-		return gin.H{
-			"status":    false,
-			"message":   "Unknown Service Selected",
-			"signedURL": "",
-		}
+		response["signedURL"] = ""
+		panic("Unknown Service Selected")
 	}
 
 	uploadURL := service.SignUpload(s, serverURL, logger)
-
-	return gin.H{
-		"status":    true,
-		"message":   "Upload URL generated successfully",
-		"signedURL": uploadURL,
-	}
+	response["status"], response["message"], response["signedURL"] = true, "Upload URL generated successfully", uploadURL
+	return
 }
 
 func (s ServicePayload) DeleteUpload() {
@@ -65,4 +70,5 @@ type Service interface {
 
 var AllServices = map[string]Service{
 	"cloudinary": Cloudinary{},
+	"s3":         S3{},
 }
