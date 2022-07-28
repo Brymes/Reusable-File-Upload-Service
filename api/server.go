@@ -39,6 +39,10 @@ func Server() {
 
 	router.POST("upload", UploadFile)
 	router.POST("signUpload", GetUploadURL)
+
+	//Notification/CallBack Routes
+	router.POST("cloudinary", CloudinaryNotification)
+
 	port := os.Getenv("PORT")
 
 	if port == "" {

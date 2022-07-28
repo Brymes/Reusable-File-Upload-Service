@@ -8,12 +8,6 @@ Kindly leave a Star and share so Others who may Find it useful.
 
 Feel Free to Open Issues and Leave PRs.
 
-My Contact:
-
-Twitter:
-
-LinkedIn:
-
 ## Table of Contents
 
 - PreRequisites
@@ -28,7 +22,7 @@ LinkedIn:
 ## PreRequisites
 
 - Cloudinary Account (Optional)
-    - CLOUDINARY_URL
+    - CLOUDINARY_API_ENVIRONMENT_VARIABLE
     - CLOUDINARY_API_SECRET
 - AWS S3 Account(Optional)
     - AWS_ACCESS_KEY_ID
@@ -39,17 +33,15 @@ LinkedIn:
 
 ## Setup
 
-- Setup Environment Variables(see env.example)
+- Setup Environment Variables see [env.example](env.example)
     - ### Setup for Cloudinary
-        - Get AWS Access Keys
-        - https://aws.github.io/aws-sdk-go-v2/docs/getting-started#get-your-aws-access-keys
+        - Get Cloudinary API Environment variable and API Secret
+            - https://cloudinary.com/documentation/how_to_integrate_cloudinary#1_create_and_set_up_your_account
         - Add Keys to .env file
-
-### Setup for S3
-
-- Get AWS Access Keys
-    - https://aws.github.io/aws-sdk-go-v2/docs/getting-started#get-your-aws-access-keys
-    - Add Keys to .env file
+    - ### Setup for S3
+        - Get AWS Access Keys
+            - https://aws.github.io/aws-sdk-go-v2/docs/getting-started#get-your-aws-access-keys
+        - Add Keys to .env file
 
 ## Usage
 

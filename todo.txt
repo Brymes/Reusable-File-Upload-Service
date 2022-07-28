@@ -1,5 +1,6 @@
 Unit tests
 Authentication Workflow
+Fetch Upload, Delete Upload
 Empty upload folder after upload complete
 Consider using goroutines to perform uploads in background
 Error Management with Sentry or similar/ Distributing logs
