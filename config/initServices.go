@@ -34,13 +34,14 @@ type CloudinaryClient struct {
 func InitCloudinary() {
 	var err error
 	CI := CloudinaryClient{IsActive: true}
+	cloudinaryUrl := os.Getenv("CLOUDINARY_API_ENVIRONMENT_VARIABLE")
 
-	if os.Getenv("CLOUDINARY_API_SECRET") == "" {
+	if os.Getenv("CLOUDINARY_API_SECRET") == "" || cloudinaryUrl == "" {
 		log.Println("Failed to initialize Cloudinary")
 		CI.IsActive = false
 	}
 
-	CI.Client, err = cloudinary.New()
+	CI.Client, err = cloudinary.NewFromURL(cloudinaryUrl)
 
 	if err != nil {
 		log.Println("Failed to initialize Cloudinary" + err.Error())
