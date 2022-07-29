@@ -3,6 +3,8 @@ package utils
 import (
 	"crypto/rand"
 	"fmt"
+	"log"
+	"runtime/debug"
 )
 
 type APIResponse map[string]interface{}
@@ -31,8 +33,9 @@ func ConvertTagsToString(tags []string) (tagString string) {
 	return
 }
 
-func HandlePanic(response APIResponse) {
+func HandlePanic(response APIResponse, logger *log.Logger) {
 	if err := recover(); err != nil {
+		logger.Println(string(debug.Stack()))
 		response["status"] = false
 		response["message"] = err
 	}

@@ -44,7 +44,7 @@ func InitCloudinary() {
 	CI.Client, err = cloudinary.NewFromURL(cloudinaryUrl)
 
 	if err != nil {
-		log.Println("Failed to initialize Cloudinary" + err.Error())
+		log.Println("Failed to initialize Cloudinary: " + err.Error())
 		CI.IsActive = false
 	}
 	CloudinaryInstance = &CI
@@ -66,7 +66,7 @@ func InitS3() {
 	}
 
 	S3I.Client = s3.NewFromConfig(cfg)
-	err = InitBucketS3(S3I)
+	err = InitBucketS3(&S3I)
 
 	if err == nil {
 		S3I.IsActive = true
@@ -85,7 +85,7 @@ func InitS3() {
 	}
 }
 
-func InitBucketS3(S3I S3Client) error {
+func InitBucketS3(S3I *S3Client) error {
 	S3I.DefaultBucket = os.Getenv("S3_DEFAULT_BUCKET")
 	if S3I.DefaultBucket == "" {
 		randNum, err := utils.GenerateUniqueID(10)

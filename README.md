@@ -47,6 +47,7 @@ Feel Free to Open Issues and Leave PRs.
 
 - `docker pull brymes/reusable-file-upload-service:stable`
 - `docker run --platform=linux/amd64 --env-file .env reusable-file-upload-service`
+- Kindly find the Postman API Documentation at this [link](https://documenter.getpostman.com/view/13151831/UzXYst4Y)
 
 ## Testing
 

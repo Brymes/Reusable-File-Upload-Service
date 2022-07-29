@@ -15,7 +15,9 @@ type ServicePayload struct {
 }
 
 func (s ServicePayload) UploadFile(logger *log.Logger) (response utils.APIResponse) {
-	defer utils.HandlePanic(response)
+	response = utils.APIResponse{"status": false}
+
+	defer utils.HandlePanic(response, logger)
 
 	service := AllServices[s.Service]
 
@@ -42,7 +44,9 @@ func (s ServicePayload) UploadFile(logger *log.Logger) (response utils.APIRespon
 }
 
 func (s ServicePayload) CreateUploadURL(serverURL string, logger *log.Logger) (response utils.APIResponse) {
-	defer utils.HandlePanic(response)
+	response = utils.APIResponse{"status": false}
+
+	defer utils.HandlePanic(response, logger)
 
 	service := AllServices[s.Service]
 

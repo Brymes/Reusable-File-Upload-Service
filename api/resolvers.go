@@ -38,9 +38,10 @@ func UploadFile(c *gin.Context) {
 
 	if response["status"].(bool) != true {
 		c.IndentedJSON(http.StatusInternalServerError, response)
+	} else {
+		c.IndentedJSON(http.StatusOK, response)
 	}
 
-	c.IndentedJSON(http.StatusOK, response)
 }
 
 func GetUploadURL(c *gin.Context) {
@@ -61,6 +62,7 @@ func GetUploadURL(c *gin.Context) {
 
 	if response["status"].(bool) != true {
 		c.IndentedJSON(http.StatusBadRequest, response)
+	} else {
+		c.IndentedJSON(http.StatusOK, response)
 	}
-	c.IndentedJSON(http.StatusOK, response)
 }
