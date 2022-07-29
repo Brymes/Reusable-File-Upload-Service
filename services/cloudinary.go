@@ -15,6 +15,10 @@ type Cloudinary struct{}
 func (c Cloudinary) Upload(s ServicePayload, logger *log.Logger) (url, publicID string) {
 	ctx := context.Background()
 
+	if config.CloudinaryInstance.IsActive != true {
+		logger.Panic("Service Not Activated, Kindly Set Auth Keys")
+	}
+
 	// Use CallBack or notification_url param to perform async uploads
 	resp, err := config.CloudinaryInstance.Client.Upload.Upload(ctx, s.Filepath, uploader.UploadParams{Tags: s.Tags})
 	if err != nil {
@@ -27,6 +31,10 @@ func (c Cloudinary) Upload(s ServicePayload, logger *log.Logger) (url, publicID 
 }
 
 func (c Cloudinary) SignUpload(s ServicePayload, notificationURL string, logger *log.Logger) string {
+
+	if config.CloudinaryInstance.IsActive != true {
+		logger.Panic("Service Not Activated, Kindly Set Auth Keys")
+	}
 	//NOTE
 	// Append parameters to the form data. The parameters that are signed using
 	// the signing function (signuploadform) need to match these.
