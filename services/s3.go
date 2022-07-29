@@ -61,17 +61,19 @@ func (s3Payload S3) SignUpload(s ServicePayload, notificationURL string, logger 
 	if id == "" {
 		logger.Panic("Internal Server Error")
 	}
-
 	input := &s3.GetObjectInput{
 		Bucket: &config.S3Instance.DefaultBucket,
 		Key:    &id,
+	}
+	if s.Bucket != "" {
+		input.Bucket = &s.Bucket
 	}
 
 	api := s3.NewPresignClient(config.S3Instance.Client)
 	resp, err := api.PresignGetObject(context.TODO(), input)
 
 	if err != nil || resp.URL == "" {
-		logger.Panic("Internal Server Error whilst sig ning URK")
+		logger.Panic("Internal Server Error whilst signing URL: %v", err)
 	}
 
 	return resp.URL
