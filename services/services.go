@@ -18,10 +18,9 @@ func (s ServicePayload) UploadFile(logger *log.Logger) (response utils.APIRespon
 	response = utils.APIResponse{"status": false}
 
 	defer utils.HandlePanic(response, logger)
+	service, found := AllServices[s.Service]
 
-	service := AllServices[s.Service]
-
-	if service == nil {
+	if found != true {
 		response["url"] = ""
 		response["publicID"] = ""
 		panic("Unknown Service Selected")
@@ -48,14 +47,14 @@ func (s ServicePayload) CreateUploadURL(serverURL string, logger *log.Logger) (r
 
 	defer utils.HandlePanic(response, logger)
 
-	service := AllServices[s.Service]
+	service, found := AllServices[s.Service]
 
-	serverURL = serverURL + "/" + s.Service
-
-	if service == nil {
+	if found != true {
 		response["signedURL"] = ""
 		panic("Unknown Service Selected")
 	}
+
+	serverURL = serverURL + "/" + s.Service
 
 	uploadURL := service.SignUpload(s, serverURL, logger)
 	response["status"], response["message"], response["signedURL"] = true, "Upload URL generated successfully", uploadURL
