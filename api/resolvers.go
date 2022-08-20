@@ -7,6 +7,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"log"
 	"net/http"
+	"os"
 	"path/filepath"
 )
 
@@ -35,6 +36,12 @@ func UploadFile(c *gin.Context) {
 	response := request.UploadFile(reqLogger)
 
 	defer log.Println(reqBuffer)
+	defer func(name string) {
+		err := os.Remove(name)
+		if err != nil {
+			log.Println(err)
+		}
+	}(filename)
 
 	if response["status"].(bool) != true {
 		c.IndentedJSON(http.StatusInternalServerError, response)
